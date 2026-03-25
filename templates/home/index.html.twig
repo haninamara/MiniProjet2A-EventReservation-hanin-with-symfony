@@ -3,7 +3,13 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-<h1>Hello {{ controller_name }}! ✅</h1>
+
+{# Flash messages #}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">{{ message }}</div>
+{% endfor %}
+
+<h1>Events</h1>
 
 <div class="row mt-4">
     {% for event in events %}
