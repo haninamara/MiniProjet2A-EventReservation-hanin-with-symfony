@@ -52,6 +52,9 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/home, roles: ROLE_USER }
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/events/new, roles: ROLE_ADMIN }
+        - { path: ^/events/\d+/edit, roles: ROLE_ADMIN }
+        - { path: ^/events/\d+/delete, roles: ROLE_ADMIN }
 
 when@test:
     security:

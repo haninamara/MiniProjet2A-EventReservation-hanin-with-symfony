@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un événement{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0 text-center">✏️ Modifier : {{ event.title }}</h3>
+        </div>
+
+        <div class="card-body">
+            {{ form_start(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.date) }}
+                {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.date) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.location) }}
+                {{ form_widget(form.location, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.location) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.seats) }}
+                {{ form_widget(form.seats, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.seats) }}
+            </div>
+
+           <div class="mb-3">
+    {% if event.image %}
+<img src="{{ asset('uploads/' ~ event.image) }}" class="img-fluid rounded shadow mb-3" style="max-height: 200px;">    {% endif %}
+
+    {{ form_label(form.image) }}
+    {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.image) }}
+</div>
+
+            <button class="btn btn-warning w-100">Mettre à jour</button>
+
+            {{ form_end(form) }}
+
+            <a href="{{ path('admin_event_index') }}" class="btn btn-secondary w-100 mt-3">
+                ⬅ Retour
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
