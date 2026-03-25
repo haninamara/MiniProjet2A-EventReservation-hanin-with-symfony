@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des événements{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="mb-4">Gestion des événements</h2>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <a href="{{ path('admin_event_new') }}" class="btn btn-primary mb-3">
+        ➕ Ajouter un événement
+    </a>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Places</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.date|date('d/m/Y H:i') }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.seats }}</td>
+                <td>
+                    <a href="{{ path('admin_event_edit', {'id': event.id}) }}" class="btn btn-warning btn-sm">✏️</a>
+
+                    <form method="post" action="{{ path('admin_event_delete', {'id': event.id}) }}" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                        <button class="btn btn-danger btn-sm">🗑️</button>
+                    </form>
+
+                    <a href="{{ path('admin_event_reservations', {'id': event.id}) }}" class="btn btn-info btn-sm">
+                        📋 Réservations
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun événement trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
