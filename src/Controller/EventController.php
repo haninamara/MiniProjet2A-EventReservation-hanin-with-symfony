@@ -12,36 +12,39 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EventController extends AbstractController
 {
-    // Route to reserve an event
-    #[Route('/events/{id}/reserve', name: 'app_event_reserve')]
-    public function reserve(Event $event, EntityManagerInterface $em): Response
-    {
-        $user = $this->getUser();
+#[Route('/events/{id}/reserve', name: 'app_event_reserve')]
+public function reserve(Event $event, Request $request, EntityManagerInterface $em): Response
+{
+    $user = $this->getUser();
 
-        if (!$user) {
-            $this->addFlash('danger', 'Vous devez être connecté pour réserver.');
-            return $this->redirectToRoute('app_login');
-        }
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
 
-        // Check if seats are available
-        if ($event->getSeats() <= $event->getReservations()->count()) {
-            $this->addFlash('danger', 'Plus de places disponibles pour cet événement.');
-            return $this->redirectToRoute('app_home');
-        }
+    // Vérifier places
+    if ($event->getSeats() <= $event->getReservations()->count()) {
+        $this->addFlash('danger', 'Plus de places disponibles.');
+        return $this->redirectToRoute('app_home');
+    }
 
-        // Create reservation
-        $reservation = new Reservation();
-        $reservation->setEvent($event)
-                    ->setName($user->getUsername())
-                    ->setEmail($user->getUsername().'@example.com')
-                    ->setPhone('')
-                    ->setCreatedAt(new \DateTime());
+    $reservation = new Reservation();
+    $reservation->setCreatedAt(new \DateTime());
+    $reservation->setEvent($event);
 
+    $form = $this->createForm(\App\Form\ReservationFormType::class, $reservation);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
         $em->persist($reservation);
         $em->flush();
 
-        $this->addFlash('success', 'Réservation effectuée avec succès !');
-
+        $this->addFlash('success', 'Réservation confirmée avec succès 🎉');
         return $this->redirectToRoute('app_home');
     }
+
+    return $this->render('reservation/form.html.twig', [
+        'form' => $form->createView(),
+        'event' => $event,
+    ]);
+}
 }
