@@ -10,7 +10,13 @@ security:
                 property: username
 
     firewalls:
+        # Public API for passkey registration/login
+        auth_api:
+            pattern: ^/api/auth/(register|login)
+            stateless: true
+            security: false
 
+        # Existing API firewall (JWT)
         api:
             pattern: ^/api
             stateless: true
@@ -25,6 +31,7 @@ security:
 
             jwt: ~
 
+        # Main site firewall
         main:
             pattern: ^/
             provider: app_user_provider
@@ -44,15 +51,19 @@ security:
                 path: /
 
     access_control:
+        # Public routes
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/home, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/(register|login), roles: PUBLIC_ACCESS }
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
 
+        # API and admin
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
         - { path: ^/admin, roles: ROLE_ADMIN }
-
+        
+        # Event management
         - { path: ^/events/new, roles: ROLE_ADMIN }
         - { path: ^/events/\d+/edit, roles: ROLE_ADMIN }
         - { path: ^/events/\d+/delete, roles: ROLE_ADMIN }

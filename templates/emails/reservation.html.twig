@@ -1,0 +1,18 @@
+<h2>Réservation confirmée</h2>
+
+<p>Bonjour {{ name }},</p>
+
+<p>
+    Vous avez réservé l'événement :
+    <strong>{{ event.title }}</strong>
+</p>
+
+<p>
+    📅 Date : {{ event.date|date('Y-m-d H:i') }}
+</p>
+
+<p>
+    📍 Lieu : {{ event.location }}
+</p>
+
+<p>Merci pour votre confiance</p>
