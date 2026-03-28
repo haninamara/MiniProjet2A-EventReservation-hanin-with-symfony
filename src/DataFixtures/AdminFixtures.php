@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Admin;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -15,21 +15,12 @@ class AdminFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $admin = new Admin();
+        $admin = new User();
         $admin->setUsername('admin');
+        $admin->setRoles(['ROLE_ADMIN']);
 
-        // hash password
-        $hashedPassword = $this->hasher->hashPassword(
-            new class implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface {
-                public function getPassword(): ?string { return null; }
-            },
-            'admin123'
-        );
-
-        
-        $admin->setPasswordHash(
-            password_hash('admin123', PASSWORD_BCRYPT)
-        );
+        $hashedPassword = $this->hasher->hashPassword($admin, 'admin123');
+        $admin->setPassword($hashedPassword);
 
         $manager->persist($admin);
         $manager->flush();
